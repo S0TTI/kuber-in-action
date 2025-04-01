@@ -1,4 +1,4 @@
-##Metod 1
+##Method 1
 ## Kubernetes Installation with Kubespray (Docker Image)
 ## This guide explains how to install Kubernetes on a 3-node cluster using Kubespray with its official Docker image.
 
@@ -75,7 +75,7 @@ kube_node
 
 ```
 
-##Metod 2
+##Method 2
 ## Kubernetes Installation with Kubespray (on linux with installed python and ansible)
 
 Prerequisites
