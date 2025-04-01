@@ -1,4 +1,30 @@
-##Method 1
+## ssh key 
+```
+ssh-keygen
+ssh-copy-id -i ~/.ssh/id_rsa.pub  user@host
+cat  ~/.ssh/id_rsa.pub
+# Copy this key to /root/.ssh/authorized_kesy
+ssh user@host
+sudo apt install vim -y
+sudo vim /root/.ssh/authorized_kesy
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDrTmVyueIChP1e+YkpSA9/goqSfCbvFlRxnNr1B9GEapZn6FpGrSnQ3ekCbhkIO/Lzf1WMmVxEa/H0JKjP6FA9znyEOARoM1Mm6PVGXqa6Kmo8aKULEisUPlQJ7qwf6dNRyWcABTUbvGqYR3F7cEueqC3GqqxNt7I5LNL7/GpSrWNLHp4wHthALoZ0yqfzPG2yf7k5rP50Jz8tZE2uY5h9B899E41QEx2aUgD83V7WD1HqKGeXgGirQ5GsGidydq6Km+phRdth9PlDWCs7AkYLQAqVWAJd0/roI5mK2Jjym2uSTTDMVLgeN+P55yIn405GQgDwMb36EXIVAp3XJ80kHILxtdem59bZnsyQScEJjZOnqKtBtwED2nO70QRHajJbFAkm+wKqp0qJgCM8rtfsJ17rDC4lEqgpUEA1KdCu1UoELEwYEnO+eG81w+eGT8c+mCSWAK8fAFec/VBN7UGswzzf6WHem9Y1lSq9V8GC8+/fMC6AIyS11yxUsdda7Fk= root@f72832e0a427
+###edit file /etc/ssh/sshd_config
+sudo vim /etc/ssh/sshd_config
+###check this line below
+
+#PermitRootLogin prohibit-password
+PermitRootLogin yes
+#PubkeyAuthentication yes
+PubkeyAuthentication yes
+# Expect .ssh/authorized_keys2 to be disregarded by default in future.
+#AuthorizedKeysFile     .ssh/authorized_keys .ssh/authorized_keys2
+AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
+
+###save the file
+## restart ssh service
+sudo systemctl restart ssh
+```
+## Method 1
 ## Kubernetes Installation with Kubespray (Docker Image)
 ## This guide explains how to install Kubernetes on a 3-node cluster using Kubespray with its official Docker image.
 
@@ -15,7 +41,7 @@ Installing docker
 ```
 # Add Docker's official GPG key:
 sudo apt-get update
-sudo apt-get install ca-certificates curl -y
+sudo apt-get install ca-certificates curl vim -y
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
@@ -37,22 +63,13 @@ docker run --rm -it --mount type=bind,source="$(pwd)"/inventory/sample,dst=/inve
   quay.io/kubespray/kubespray:v2.27.0 bash
 
 ```
-
-
-Steps to Install Kubernetes
-
-1. Clone Kubespray Repository
-
-git clone https://github.com/kubernetes-sigs/kubespray.git
-cd kubespray
-
-2. Create Inventory File
-
+#Create Inventory File
 cp -rfp inventory/sample inventory/mycluster
-vi inventory/mycluster/hosts.ini
+vim inventory/mycluster/inventory.ini
 
 Paste the inventory format provided above and modify as per your setup.
-
+#in vim editor can use this command to replace some things
+###   :%s/192.168.6.130/172.16.37.101/g
 Inventory File Format
 ```
 
@@ -75,7 +92,7 @@ kube_node
 
 ```
 
-##Method 2
+## Method 2
 ## Kubernetes Installation with Kubespray (on linux with installed python and ansible)
 
 Prerequisites
