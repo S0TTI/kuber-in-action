@@ -7,7 +7,8 @@ cat  ~/.ssh/id_rsa.pub
 ssh user@host
 sudo apt install vim -y
 sudo vim /root/.ssh/authorized_kesy
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDrTmVyueIChP1e+YkpSA9/goqSfCbvFlRxnNr1B9GEapZn6FpGrSnQ3ekCbhkIO/Lzf1WMmVxEa/H0JKjP6FA9znyEOARoM1Mm6PVGXqa6Kmo8aKULEisUPlQJ7qwf6dNRyWcABTUbvGqYR3F7cEueqC3GqqxNt7I5LNL7/GpSrWNLHp4wHthALoZ0yqfzPG2yf7k5rP50Jz8tZE2uY5h9B899E41QEx2aUgD83V7WD1HqKGeXgGirQ5GsGidydq6Km+phRdth9PlDWCs7AkYLQAqVWAJd0/roI5mK2Jjym2uSTTDMVLgeN+P55yIn405GQgDwMb36EXIVAp3XJ80kHILxtdem59bZnsyQScEJjZOnqKtBtwED2nO70QRHajJbFAkm+wKqp0qJgCM8rtfsJ17rDC4lEqgpUEA1KdCu1UoELEwYEnO+eG81w+eGT8c+mCSWAK8fAFec/VBN7UGswzzf6WHem9Y1lSq9V8GC8+/fMC6AIyS11yxUsdda7Fk= root@f72832e0a427
+sudo vim /root/.ssh/authorized_keys
+sudo mv /root/.ssh/authorized_kesy   /root/.ssh/authorized_keys
 ###edit file /etc/ssh/sshd_config
 sudo vim /etc/ssh/sshd_config
 ###check this line below
@@ -24,6 +25,9 @@ AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
 ## restart ssh service
 sudo systemctl restart ssh
 ```
+# Test below command you should connect to the host without pass
+ssh root@172.16.37.104
+
 ## Method 1
 ## Kubernetes Installation with Kubespray (Docker Image)
 ## This guide explains how to install Kubernetes on a 3-node cluster using Kubespray with its official Docker image.
@@ -56,10 +60,9 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 ```
 
-Run the kubespray Docker Images
+Run the kubespray Docker Images and ***execute command in the container***
 ```
-docker run --rm -it --mount type=bind,source="$(pwd)"/inventory/sample,dst=/inventory \
-  --mount type=bind,source="${HOME}"/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
+docker run --rm -it --mount type=bind,source="${HOME}"/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
   quay.io/kubespray/kubespray:v2.27.0 bash
 
 ```
@@ -91,6 +94,8 @@ kube_control_plane
 kube_node
 
 ```
+## Now run kubespray ansible to install kubernetes in all your node
+ansible-playbook -i inventory/mycluster/inventory.ini cluster.yml
 
 ## Method 2
 ## Kubernetes Installation with Kubespray (on linux with installed python and ansible)
