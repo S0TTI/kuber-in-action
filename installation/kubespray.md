@@ -5,12 +5,52 @@ Prerequisites
 ```
 3 Linux nodes with SSH access.
 
-Python and Ansible installed.
-
-Docker installed on the control node.
+Docker installed in a manager linux
 
 Public and private SSH keys configured for passwordless SSH access.
 ```
+
+Installing docker
+```
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+
+ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+```
+
+Run the kubespray Docker Images
+```
+docker run --rm -it --mount type=bind,source="$(pwd)"/inventory/sample,dst=/inventory \
+  --mount type=bind,source="${HOME}"/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
+  quay.io/kubespray/kubespray:v2.27.0 bash
+
+```
+
+
+Steps to Install Kubernetes
+
+1. Clone Kubespray Repository
+
+git clone https://github.com/kubernetes-sigs/kubespray.git
+cd kubespray
+
+2. Create Inventory File
+
+cp -rfp inventory/sample inventory/mycluster
+vi inventory/mycluster/hosts.ini
+
+Paste the inventory format provided above and modify as per your setup.
 
 Inventory File Format
 ```
@@ -37,31 +77,16 @@ kube_node
 
 ## Kubernetes Installation with Kubespray (on linux with installed python and ansible)
 
-Steps to Install Kubernetes
-
-1. Clone Kubespray Repository
-
-git clone https://github.com/kubernetes-sigs/kubespray.git
-cd kubespray
-
-2. Create Inventory File
-
-cp -rfp inventory/sample inventory/mycluster
-vi inventory/mycluster/hosts.ini
-
-Paste the inventory format provided above and modify as per your setup.
-
-3. Run Kubespray Using Docker
-
+Prerequisites
 ```
-docker run --rm -it --mount type=bind,source="$(pwd)"/inventory/sample,dst=/inventory \
-  --mount type=bind,source="${HOME}"/.ssh/id_rsa,dst=/root/.ssh/id_rsa \
-  quay.io/kubespray/kubespray:v2.27.0 bash
+3 Linux nodes with SSH access.
+
+Python and Ansible installed.
+
+Docker installed on the control node.
+
+Public and private SSH keys configured for passwordless SSH access.
 ```
-
-
-
-
 
 ```
 #write your Kubernetes nodes ip :
