@@ -90,7 +90,7 @@ Public and private SSH keys configured for passwordless SSH access.
 Installing ansible
 ```
 sudo apt update && sudo apt upgrade -y
-sudo apt install ansible -y
+sudo apt install ansible  git  -y
 
 ```
 
