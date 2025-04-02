@@ -96,7 +96,13 @@ kube_node
 ```
 ## Now run kubespray ansible to install kubernetes in all your node
 ansible-playbook -i inventory/mycluster/inventory.ini cluster.yml
+## OR use this 
+# You will be asked for ssh pass and sudo pass
+```
+ansible-playbook -i inventory/mycluster/inventory.ini --user geek --become -kK cluster.yml
+```
 
+################################################################################
 ## Method 2
 ## Kubernetes Installation with Kubespray (on linux with installed python and ansible)
 
@@ -104,41 +110,48 @@ Prerequisites
 ```
 3 Linux nodes with SSH access.
 
-Python and Ansible installed.
-
-Docker installed on the control node.
-
 Public and private SSH keys configured for passwordless SSH access.
 ```
-Installing ansible
-```
-sudo apt update && sudo apt upgrade -y
-sudo apt install ansible  git  -y
-
-```
-
 # Clone Kubespray
 ```
 mkdir kubernetes_installation/
 cd kubernetes_installation/
 git clone https://github.com/kubernetes-sigs/kubespray.git
-cd kubespray/
 ```
 # install requirements for kubespray 
 ```
-apt update && apt install python3-pip ansible
-pip install -r requirements.txt  --break-system-packages
+sudo apt install python3  python3-pip  python3-venv  -y
+python3 -m pip install --upgrade pip setuptools
+##https://github.com/kubernetes-sigs/kubespray/blob/master/docs/ansible/ansible.md#installing-ansible
+## check your python version and compare with the site documentaion
+python3 --version
+python --version
+
+VENVDIR=kubespray-venv
+KUBESPRAYDIR=kubespray
+python3 -m venv $VENVDIR
+source $VENVDIR/bin/activate
+cd $KUBESPRAYDIR
+pip install -U -r requirements.txt
 pip3 install ruamel.yaml --break-system-packages
-# Run it on ALL Nodes
-apt install sshpass -y  
+##https://github.com/kubernetes-sigs/kubespray/blob/master/docs/ansible/ansible.md#installing-ansible
+## check your ansible version
+
+## now check your version
+ansible --version
+## if not install install with this command
+python3 -m pip install "ansible==2.16.4"
+pip install "ansible==2.16.4"
+
 ```
 
-Create Inventory File
+#Create Inventory File
 cp -rfp inventory/sample inventory/mycluster
-vi inventory/mycluster/hosts.ini
+vim inventory/mycluster/inventory.ini
 
 Paste the inventory format provided above and modify as per your setup.
-
+#in vim editor can use this command to replace some things
+###   :%s/192.168.6.130/172.16.37.101/g
 Inventory File Format
 ```
 
@@ -160,7 +173,10 @@ kube_control_plane
 kube_node
 
 ```
+## Now run kubespray ansible to install kubernetes in all your node
+ansible-playbook -i inventory/mycluster/inventory.ini cluster.yml
+## OR use this 
 # You will be asked for ssh pass and sudo pass
 ```
-ansible-playbook -i inventory/mycluster/hosts.yaml --user geek --become -kK cluster.yml
+ansible-playbook -i inventory/mycluster/inventory.ini --user geek --become -kK cluster.yml
 ```
