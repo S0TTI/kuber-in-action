@@ -127,16 +127,23 @@ python3 -m pip install --upgrade pip setuptools
 python3 --version
 python --version
 
+
+python3 -m pip install  ansible
+python3 -m pip install  ansible-core
+
+sudo apt update
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt install python3.10 python3.10-venv python3.10-dev -y
+
 VENVDIR=kubespray-venv
 KUBESPRAYDIR=kubespray
-python3 -m venv $VENVDIR
+python3.10 -m venv $VENVDIR
 source $VENVDIR/bin/activate
 cd $KUBESPRAYDIR
 pip install -U -r requirements.txt
-pip3 install ruamel.yaml --break-system-packages
+
 ##https://github.com/kubernetes-sigs/kubespray/blob/master/docs/ansible/ansible.md#installing-ansible
 ## check your ansible version
-
 ## now check your version
 ansible --version
 ## if not install install with this command
@@ -174,9 +181,13 @@ kube_node
 
 ```
 ## Now run kubespray ansible to install kubernetes in all your node
+```
 ansible-playbook -i inventory/mycluster/inventory.ini cluster.yml
+```
 ## OR use this 
 # You will be asked for ssh pass and sudo pass
+# for test befor run main command run this command
+ansible all -i inventory/mycluster/inventory.ini -u geek -k -b -K -m ping
 ```
 ansible-playbook -i inventory/mycluster/inventory.ini --user geek --become -kK cluster.yml
 ```
